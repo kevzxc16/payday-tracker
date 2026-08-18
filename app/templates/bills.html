@@ -1,0 +1,52 @@
+<h1>Bills</h1>
+<p class="muted">Track what you owe — grouped against your next payday so you can see what needs to happen before the next deposit.</p>
+
+$error_block
+
+<div class="card">
+    $bills_html
+</div>
+
+<details class="card" open>
+    <summary><h2 style="display:inline">Add a bill</h2></summary>
+    <form method="post" action="/bills">
+        <input type="hidden" name="csrf_token" value="$csrf_token">
+        <div class="form-grid">
+            <label>
+                <span>Bill name</span>
+                <input type="text" name="name" required maxlength="120" placeholder="Rent, Netflix…">
+            </label>
+            <label>
+                <span>Amount</span>
+                <input type="text" name="amount" required placeholder="1200.00">
+            </label>
+            <label>
+                <span>Due date</span>
+                <input type="date" name="due_date" required>
+            </label>
+            <label>
+                <span>Category (optional)</span>
+                <input type="text" name="category" maxlength="60" placeholder="Housing, Utilities…">
+            </label>
+        </div>
+        <label class="checkbox">
+            <input type="checkbox" name="is_recurring" value="1">
+            <span>Recurring</span>
+        </label>
+        <label>
+            <span>Recurrence (if recurring)</span>
+            <select name="recurrence">
+                <option value="">— pick one —</option>
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Biweekly</option>
+                <option value="monthly" selected>Monthly</option>
+                <option value="yearly">Yearly</option>
+            </select>
+        </label>
+        <label>
+            <span>Notes (optional)</span>
+            <textarea name="notes" rows="2"></textarea>
+        </label>
+        <button type="submit" class="primary">Add bill</button>
+    </form>
+</details>

@@ -1,0 +1,44 @@
+<h1>Debts</h1>
+<p class="muted">Track balances, record payments, watch what you owe shrink.</p>
+
+$error_block
+
+$debts_html
+
+<details class="card" open>
+    <summary><h2 style="display:inline">Add a debt</h2></summary>
+    <form method="post" action="/debts">
+        <input type="hidden" name="csrf_token" value="$csrf_token">
+        <div class="form-grid">
+            <label>
+                <span>Debt name</span>
+                <input type="text" name="name" required maxlength="120" placeholder="Credit card, Student loan…">
+            </label>
+            <label>
+                <span>Starting balance</span>
+                <input type="text" name="starting_balance" required placeholder="5000.00">
+            </label>
+            <label>
+                <span>Current balance (defaults to starting)</span>
+                <input type="text" name="current_balance" placeholder="Optional">
+            </label>
+            <label>
+                <span>Minimum payment</span>
+                <input type="text" name="minimum_payment" required placeholder="125.00">
+            </label>
+            <label>
+                <span>Interest rate (% APR, optional)</span>
+                <input type="text" name="interest_rate_pct" placeholder="15.99">
+            </label>
+            <label>
+                <span>Target payoff date (optional)</span>
+                <input type="date" name="target_payoff_date">
+            </label>
+        </div>
+        <label>
+            <span>Notes (optional)</span>
+            <textarea name="notes" rows="2"></textarea>
+        </label>
+        <button type="submit" class="primary">Add debt</button>
+    </form>
+</details>

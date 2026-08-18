@@ -1,0 +1,80 @@
+<div class="dashboard-header">
+    <span class="eyebrow">Welcome back</span>
+    <h1 class="dashboard-title">$user_email</h1>
+</div>
+
+$overdue_warning
+
+<section class="period-indicator" aria-label="Pay period progress">
+    <div class="period-row">
+        <div class="period-pole">
+            <span class="eyebrow">This payday</span>
+            <strong>$period_start</strong>
+        </div>
+        <div class="period-pole end">
+            <span class="eyebrow">Next payday · in $days_to_payday days</span>
+            <strong>$next_payday</strong>
+        </div>
+    </div>
+    <div class="period-track">
+        <div class="period-fill" style="width: $period_progress_pct%"></div>
+        <div class="period-today" style="left: $period_progress_pct%"
+             title="Today"></div>
+        <div class="period-today-label" style="left: $period_progress_pct%">today</div>
+    </div>
+</section>
+
+<section class="kpi-grid">
+    <div class="kpi-card">
+        <span class="kpi-label">Income this period</span>
+        <div class="kpi-value amount">$income_amount</div>
+    </div>
+    <div class="kpi-card">
+        <span class="kpi-label">Bills unpaid · $bills_count_unpaid</span>
+        <div class="kpi-value amount">$bills_unpaid_amount</div>
+        <small>$bills_paid_amount paid</small>
+    </div>
+    <div class="kpi-card">
+        <span class="kpi-label">Saved this period</span>
+        <div class="kpi-value amount">$savings_amount</div>
+    </div>
+    <div class="kpi-card">
+        <span class="kpi-label">Debt paid this period</span>
+        <div class="kpi-value amount">$debt_paid_amount</div>
+    </div>
+    <div class="kpi-card">
+        <span class="kpi-label">Spending</span>
+        <div class="kpi-value amount">$expenses_amount</div>
+    </div>
+    <div class="kpi-card $discretionary_class">
+        <span class="kpi-label">Remaining</span>
+        <div class="kpi-value amount">$discretionary_amount</div>
+        <small>income minus everything committed</small>
+    </div>
+</section>
+
+<section class="dashboard-grid">
+    <div class="card">
+        <h2>Upcoming bills</h2>
+        <ul class="plain-list">$upcoming_bills_html</ul>
+        <p><a href="/bills">Manage bills →</a></p>
+    </div>
+
+    <div class="card">
+        <h2>Savings goals</h2>
+        <ul class="plain-list">$goals_html</ul>
+        <p><a href="/savings">Manage goals →</a></p>
+    </div>
+
+    <div class="card">
+        <h2>Debts</h2>
+        <ul class="plain-list">$debts_html</ul>
+        <p><a href="/debts">Manage debts →</a></p>
+    </div>
+
+    <div class="card">
+        <h2>Recent spending</h2>
+        <ul class="plain-list">$recent_expenses_html</ul>
+        <p><a href="/expenses">View all spending →</a></p>
+    </div>
+</section>

@@ -1,0 +1,46 @@
+<h1>Income</h1>
+<p class="muted">Record paychecks. These power your dashboard's "income this period" figure.</p>
+
+$error_block
+
+<div class="kpi-card single">
+    <div class="kpi-label">Total recorded income</div>
+    <div class="kpi-value">$total_amount</div>
+</div>
+
+<details class="card" open>
+    <summary><h2 style="display:inline">Record a paycheck</h2></summary>
+    <form method="post" action="/income">
+        <input type="hidden" name="csrf_token" value="$csrf_token">
+        <div class="form-grid">
+            <label>
+                <span>Amount received</span>
+                <input type="text" name="amount" required placeholder="1850.00">
+            </label>
+            <label>
+                <span>Date received</span>
+                <input type="date" name="received_on" value="$today" required>
+            </label>
+        </div>
+        <label>
+            <span>Note (optional)</span>
+            <input type="text" name="note" placeholder="Side gig, bonus, etc.">
+        </label>
+        <button type="submit" class="primary">Record paycheck</button>
+    </form>
+</details>
+
+<div class="card">
+    <h2>Recent paychecks</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th class="amount">Amount</th>
+                <th>Note</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>$rows</tbody>
+    </table>
+</div>

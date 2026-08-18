@@ -1,0 +1,38 @@
+<h1>Create your account</h1>
+<p>Track your money between paychecks. It's free to get started.</p>
+
+$error_block
+
+<form method="post" action="/signup" class="card">
+    <label>
+        <span>Email</span>
+        <input type="email" name="email" required autocomplete="email">
+    </label>
+    <label>
+        <span>Password</span>
+        <input type="password" name="password" required minlength="8"
+               autocomplete="new-password">
+        <small>At least 8 characters.</small>
+    </label>
+    <label>
+        <span>Confirm password</span>
+        <input type="password" name="password_confirm" required minlength="8"
+               autocomplete="new-password">
+    </label>
+    <label>
+        <span>How often do you get paid?</span>
+        <select name="pay_schedule" required>
+            <option value="weekly">Weekly</option>
+            <option value="biweekly" selected>Biweekly (every 2 weeks)</option>
+            <option value="monthly">Monthly</option>
+        </select>
+    </label>
+    <label>
+        <span>Your next (or most recent) payday</span>
+        <input type="date" name="first_payday" required>
+        <small>We use this to calculate future paydays.</small>
+    </label>
+    <button type="submit" class="primary">Create account</button>
+</form>
+
+<p>Already have an account? <a href="/login">Log in</a>.</p>

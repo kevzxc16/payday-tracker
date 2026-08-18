@@ -1,0 +1,21 @@
+<h1>Log in</h1>
+
+$error_block
+
+<form method="post" action="/login" class="card">
+    <input type="hidden" name="next" value="$next">
+    <label>
+        <span>Email</span>
+        <input type="email" name="email" required autocomplete="email" autofocus>
+    </label>
+    <label>
+        <span>Password</span>
+        <input type="password" name="password" required autocomplete="current-password">
+    </label>
+    <button type="submit" class="primary">Log in</button>
+</form>
+
+<p>
+    <a href="/forgot-password">Forgot your password?</a> ·
+    <a href="/signup">Create an account</a>
+</p>

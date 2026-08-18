@@ -1,0 +1,66 @@
+<h1>Spending</h1>
+<p class="muted">Log day-to-day spending and see where it goes.</p>
+
+$error_block
+
+<section class="kpi-grid two-up">
+    <div class="kpi-card">
+        <div class="kpi-label">Total logged</div>
+        <div class="kpi-value">$total_amount</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-label">By category</div>
+        <ul class="plain-list small">$summary_rows</ul>
+    </div>
+</section>
+
+<details class="card" open>
+    <summary><h2 style="display:inline">Log spending</h2></summary>
+    <form method="post" action="/expenses">
+        <input type="hidden" name="csrf_token" value="$csrf_token">
+        <div class="form-grid">
+            <label>
+                <span>Amount</span>
+                <input type="text" name="amount" required placeholder="12.50">
+            </label>
+            <label>
+                <span>Category</span>
+                <input type="text" name="category" required list="categories" placeholder="Groceries">
+                <datalist id="categories">
+                    <option value="Groceries">
+                    <option value="Eating out">
+                    <option value="Transportation">
+                    <option value="Coffee">
+                    <option value="Entertainment">
+                    <option value="Personal">
+                    <option value="Household">
+                </datalist>
+            </label>
+            <label>
+                <span>Date</span>
+                <input type="date" name="spent_on" value="$today" required>
+            </label>
+        </div>
+        <label>
+            <span>Description (optional)</span>
+            <input type="text" name="description" placeholder="What did you buy?">
+        </label>
+        <button type="submit" class="primary">Log it</button>
+    </form>
+</details>
+
+<div class="card">
+    <h2>Recent spending</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th class="amount">Amount</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>$rows</tbody>
+    </table>
+</div>

@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Until Next Payday — Payday Tracker</title>
+<link rel="stylesheet" href="../shared/print.css">
+<style>
+/* Bonus-5-specific tweaks. The survival sheet is high density; tighten
+   spacing so everything lives on one page when stressed eyes are reading. */
+.survival h1 { font-size: 24pt; margin-bottom: 0.04in; }
+.survival .deck { margin-bottom: 0.18in; }
+.survival .priority-list {
+    list-style: none;
+    counter-reset: prio;
+    padding: 0;
+    margin: 0.1in 0 0.2in;
+}
+.survival .priority-list > li {
+    counter-increment: prio;
+    padding: 0.09in 0 0.09in 0.42in;
+    border-bottom: 0.5pt solid var(--border);
+    position: relative;
+    page-break-inside: avoid;
+}
+.survival .priority-list > li:last-child { border-bottom: 0; }
+.survival .priority-list > li::before {
+    content: counter(prio);
+    position: absolute;
+    left: 0;
+    top: 0.08in;
+    width: 0.3in;
+    height: 0.3in;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11pt;
+    font-weight: 700;
+    text-align: center;
+    line-height: 0.3in;
+    font-variant-numeric: tabular-nums;
+}
+.survival .priority-list .prio-label {
+    font-weight: 600;
+    color: var(--text);
+}
+.survival .priority-list .prio-note {
+    display: block;
+    font-size: 9.5pt;
+    color: var(--text-muted);
+    line-height: 1.35;
+    margin-top: 0.02in;
+}
+
+/* Two-column toolkit layout */
+.toolkit-grid {
+    display: flex;
+    gap: 0.3in;
+    margin: 0.15in 0;
+}
+.toolkit-col {
+    flex: 1 1 0;
+}
+.toolkit-col h2 { margin-top: 0; }
+
+/* Script block — quoted phone scripts */
+.script {
+    border-left: 2pt solid var(--accent);
+    padding: 0.04in 0 0.04in 0.14in;
+    margin: 0.08in 0 0.16in;
+    font-size: 10pt;
+    color: var(--text-soft);
+    font-style: italic;
+    line-height: 1.45;
+}
+.script .script-label {
+    display: block;
+    font-style: normal;
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: var(--accent);
+    margin-bottom: 0.04in;
+}
+
+/* Warning list — what NOT to do */
+.warning-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.08in 0;
+}
+.warning-list > li {
+    padding: 0.08in 0 0.08in 0.28in;
+    border-bottom: 0.5pt solid var(--border);
+    position: relative;
+    font-size: 10pt;
+}
+.warning-list > li:last-child { border-bottom: 0; }
+.warning-list > li::before {
+    content: "✕";
+    position: absolute;
+    left: 0;
+    top: 0.08in;
+    color: var(--negative);
+    font-weight: 700;
+}
+.warning-list .warn-title {
+    display: block;
+    font-weight: 600;
+    color: var(--text);
+    font-style: normal;
+    font-size: 10pt;
+    margin-bottom: 0.02in;
+}
+.warning-list .warn-why {
+    display: block;
+    font-size: 9pt;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+</style>
+</head>
+<body class="survival">
+
+<!-- ========================================================================
+     PAGE 1 — The Survival Sheet (the artifact opens immediately)
+     ==================================================================== -->
+<header class="cover-bar">
+    <div>
+        <span class="series-mark"></span>
+        <span class="series-label">Bonus 05</span>
+    </div>
+    <span class="series-title">Until Next Payday</span>
+</header>
+
+<section class="section" style="margin-bottom: 0.18in;">
+    <h1>Until next payday</h1>
+    <p class="deck">
+        When money is tight, you don't need a budget — you need a triage
+        list. Pay these in order. Skip the rest until your next deposit
+        lands.
+    </p>
+</section>
+
+<!-- The "how much do I have / how long" worksheet -->
+<section class="section" style="margin-bottom: 0.2in;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="width: 33.3%; padding-right: 0.1in;">
+                <span class="eyebrow">I have</span>
+                <div style="border-bottom: 1pt solid var(--rule); height: 0.32in;"></div>
+            </td>
+            <td style="width: 33.3%; padding: 0 0.1in;">
+                <span class="eyebrow">Days until next payday</span>
+                <div style="border-bottom: 1pt solid var(--rule); height: 0.32in;"></div>
+            </td>
+            <td style="width: 33.3%; padding-left: 0.1in;">
+                <span class="eyebrow">Expected paycheck</span>
+                <div style="border-bottom: 1pt solid var(--rule); height: 0.32in;"></div>
+            </td>
+        </tr>
+    </table>
+</section>
+
+<!-- The triage hierarchy -->
+<section class="section">
+    <h2 style="margin-top: 0;">Pay these first, in this order</h2>
+    <ol class="priority-list">
+        <li>
+            <span class="prio-label">Shelter</span>
+            <span class="prio-note">
+                Rent or mortgage. Eviction or foreclosure is catastrophic
+                and hard to undo. If you can't pay the full amount, call
+                your landlord or bank <em>now</em> — script on page two.
+            </span>
+        </li>
+        <li>
+            <span class="prio-label">Food</span>
+            <span class="prio-note">
+                Basic groceries to get you through. Don't skip meals to
+                save money — it leads to expensive convenience eating later.
+            </span>
+        </li>
+        <li>
+            <span class="prio-label">Utilities that shut off</span>
+            <span class="prio-note">
+                Heat in winter, AC in summer extremes, water, electricity,
+                phone. Most have hardship programs — ask before they shut off.
+            </span>
+        </li>
+        <li>
+            <span class="prio-label">Health and safety</span>
+            <span class="prio-note">
+                Prescriptions you actually need. Child care that lets you
+                work. Anything legally required.
+            </span>
+        </li>
+        <li>
+            <span class="prio-label">Transportation to work</span>
+            <span class="prio-note">
+                Gas, bus pass, or the car payment if you need the car for
+                your job. Losing your job costs more than any single bill.
+            </span>
+        </li>
+        <li>
+            <span class="prio-label">Insurance</span>
+            <span class="prio-note">
+                Car insurance (legally required), health insurance if you
+                have it. A lapsed policy costs more to restart than to maintain.
+            </span>
+        </li>
+        <li>
+            <span class="prio-label">Debt minimum payments</span>
+            <span class="prio-note">
+                Minimums only, on each active debt. Missing a minimum
+                adds late fees that compound the problem.
+            </span>
+        </li>
+        <li>
+            <span class="prio-label">Everything else — defer or cut</span>
+            <span class="prio-note">
+                Streaming subscriptions, gym memberships, takeout,
+                non-essential shopping. These wait until next payday.
+            </span>
+        </li>
+    </ol>
+</section>
+
+<!-- Three actions -->
+<section class="section">
+    <h2>Three things I'll do today</h2>
+    <ul class="checklist">
+        <li>
+            <span class="item-title">Call about: <span class="fill-line long"></span></span>
+        </li>
+        <li>
+            <span class="item-title">Cut or pause: <span class="fill-line long"></span></span>
+        </li>
+        <li>
+            <span class="item-title">One small move forward: <span class="fill-line long"></span></span>
+        </li>
+    </ul>
+</section>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================
+     PAGE 2 — The Toolkit (scripts + warnings + recovery)
+     ==================================================================== -->
+<section class="section">
+    <div class="section-header">
+        <h1 class="section-title">The toolkit</h1>
+        <span class="section-count">when you need to ask</span>
+    </div>
+    <p class="deck">
+        Two things matter most in a hard period: asking for grace before
+        you need it, and not making the problem worse with a fast
+        "solution." Both are below.
+    </p>
+</section>
+
+<div class="toolkit-grid">
+
+    <!-- LEFT: Scripts for calls -->
+    <div class="toolkit-col">
+        <h2>Calls to make today</h2>
+        <p class="muted small" style="margin-bottom: 0.18in;">
+            People are more flexible than systems. Asking before you miss
+            a payment almost always goes better than asking after.
+        </p>
+
+        <div class="script">
+            <span class="script-label">Calling your landlord</span>
+            "Hi [name], it's [you]. I want to give you a heads up that
+            I'm going to be short on rent this month by [amount]. I'll
+            have the rest by [date]. Can we work something out?"
+        </div>
+
+        <div class="script">
+            <span class="script-label">Calling a utility company</span>
+            "Hi, I'm calling because my payment will be late this month.
+            I'd like to ask about your hardship program, or set up a
+            payment plan so my service doesn't get interrupted."
+        </div>
+
+        <div class="script">
+            <span class="script-label">Calling a credit card company</span>
+            "Hi, I'm calling to ask if you can lower my minimum payment
+            for this month due to financial hardship. I want to keep
+            making payments, just smaller ones until next paycheck."
+        </div>
+
+        <div class="callout" style="margin-top: 0.18in;">
+            <span class="eyebrow">Two things to remember</span>
+            <p style="margin-bottom: 0; font-size: 9.5pt;">
+                Be brief. Don't apologize ten times. Say what you need,
+                offer a date, ask if it's possible. That's it.
+            </p>
+        </div>
+    </div>
+
+    <!-- RIGHT: What NOT to do -->
+    <div class="toolkit-col">
+        <h2>What not to do</h2>
+        <p class="muted small" style="margin-bottom: 0.18in;">
+            The "easy" solutions are the most expensive. Each of these
+            turns a tight month into a tight year.
+        </p>
+
+        <ul class="warning-list">
+            <li>
+                <span class="warn-title">Payday loans or cash-advance apps</span>
+                <span class="warn-why">
+                    Effective APRs of 300–600%. A $300 loan often costs
+                    $400+ to repay within weeks. They're designed to roll
+                    over.
+                </span>
+            </li>
+            <li>
+                <span class="warn-title">Title loans on your car</span>
+                <span class="warn-why">
+                    You can lose your car. Then you lose your way to work.
+                    Then it's not just a tight month.
+                </span>
+            </li>
+            <li>
+                <span class="warn-title">Credit card cash advances</span>
+                <span class="warn-why">
+                    Higher APR than purchases, no grace period, fees from
+                    day one. Use the card to buy what you need instead —
+                    the math is better.
+                </span>
+            </li>
+            <li>
+                <span class="warn-title">Borrowing from your 401(k)</span>
+                <span class="warn-why">
+                    Taxes plus a 10% penalty if you're under 59½. You're
+                    paying to undo a year of retirement growth.
+                </span>
+            </li>
+            <li>
+                <span class="warn-title">Buy-now-pay-later for essentials</span>
+                <span class="warn-why">
+                    Groceries on installment plans means you'll be paying
+                    for this month's food two months from now, on top of
+                    that month's food. It compounds.
+                </span>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+<!-- Recovery section -->
+<section class="section">
+    <div class="callout">
+        <span class="eyebrow">After this period</span>
+        <p style="margin-bottom: 0;">
+            One tight period doesn't mean every period has to be tight.
+            On your next reset, set aside even $10 toward an emergency
+            fund — the goal isn't to have a thousand dollars saved
+            tomorrow, it's to have <em>any</em> buffer before the next
+            hard period arrives. Buffers, not budgets, are what break
+            the cycle.
+        </p>
+    </div>
+</section>
+
+</body>
+</html>

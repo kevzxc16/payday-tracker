@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Design Test — Payday Tracker Bonus Stack</title>
+<link rel="stylesheet" href="../shared/print.css">
+</head>
+<body>
+
+<!-- ========================================================================
+     Page 1 — Cover
+     ==================================================================== -->
+<header class="cover-bar">
+    <div>
+        <span class="series-mark"></span>
+        <span class="series-label">Bonus 00</span>
+    </div>
+    <span class="series-title">Design Test</span>
+</header>
+
+<section class="cover">
+    <div class="cover-eyebrow">A bonus stack from Payday Tracker</div>
+    <h1>The Design Test</h1>
+    <p class="cover-deck">
+        Every primitive in the bonus design system, on one page, so we can
+        see how it prints, how it reads, and where it breaks before we
+        commit any real content to it.
+    </p>
+    <div class="cover-footer">
+        <span>00 of 05</span>
+        <span class="numeric">June 2026</span>
+    </div>
+</section>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================
+     Page 2 — Typography + callouts
+     ==================================================================== -->
+<section class="section">
+    <div class="section-header">
+        <h1 class="section-title">Typography &amp; structure</h1>
+        <span class="section-count">01 / 04</span>
+    </div>
+
+    <span class="eyebrow">Section eyebrow — small caps</span>
+    <h2>A section heading at 13 point</h2>
+    <p>
+        Body type is set at 11 point with a 1.5 leading. That's deliberate —
+        anything smaller and printed PDFs become a strain to read on paper.
+        Hierarchy is carried by weight and size, not color, so the document
+        still works when somebody prints it in black and white on their
+        office laser printer.
+    </p>
+
+    <h3>A subhead at 10.5 point</h3>
+    <p>
+        And another paragraph underneath. <strong>This is what bold text
+        looks like</strong>, used sparingly for the words that actually
+        need to stand out.
+    </p>
+
+    <hr class="rule-heavy">
+
+    <p class="muted">Muted text — a half-step quieter than body.</p>
+    <p>
+        Numbers like <span class="amount">$1,234.56</span> use tabular
+        figures so columns of money line up vertically. Same for tracking
+        numbers: <span class="num">01 · 02 · 03</span>.
+    </p>
+</section>
+
+<section class="section">
+    <span class="eyebrow muted">Callouts</span>
+
+    <div class="callout">
+        <span class="eyebrow">A standard callout</span>
+        <p>
+            Used to mark a "stop and read this" zone. Warm paper background,
+            navy left-rule. Don't use these for everything — they lose
+            weight when overused.
+        </p>
+    </div>
+
+    <div class="callout callout-warning">
+        <span class="eyebrow">A warning callout</span>
+        <p>Used when something deserves caution but isn't an emergency.</p>
+    </div>
+
+    <div class="callout callout-danger">
+        <span class="eyebrow">A danger callout</span>
+        <p>Reserved for "don't do this" content. Red-leaning, restrained.</p>
+    </div>
+</section>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================
+     Page 3 — Lists, checklists, fill-ins
+     ==================================================================== -->
+<section class="section">
+    <div class="section-header">
+        <h1 class="section-title">Checklists &amp; fill-ins</h1>
+        <span class="section-count">02 / 04</span>
+    </div>
+
+    <h2>Standard checklist</h2>
+    <ul class="checklist">
+        <li>
+            <span class="item-title">Move savings before you spend</span>
+            <span class="item-note">
+                The moment your paycheck lands, transfer the savings amount
+                first. Out of sight, out of mind.
+            </span>
+        </li>
+        <li>
+            <span class="item-title">Pay priority bills</span>
+            <span class="item-note">
+                Rent, utilities, insurance. The bills that hurt most if
+                they go unpaid.
+            </span>
+        </li>
+        <li>
+            <span class="item-title">Set your discretionary amount</span>
+            <span class="item-note">
+                What's left is what you can spend without panic. Write it
+                somewhere visible.
+            </span>
+        </li>
+    </ul>
+
+    <h2>Numbered steps</h2>
+    <ol class="steps">
+        <li><strong>Open the app.</strong> Check what's coming due before payday.</li>
+        <li><strong>Run the reset.</strong> Move money, mark bills, log what's left.</li>
+        <li><strong>Close the loop.</strong> Note one thing you learned from the last period.</li>
+    </ol>
+</section>
+
+<section class="section">
+    <h2>Worksheet fill-ins</h2>
+
+    <div class="fill-row">
+        <label>Date:</label>
+        <div class="fill-grow"></div>
+    </div>
+    <div class="fill-row">
+        <label>This paycheck:</label>
+        <div class="fill-grow"></div>
+    </div>
+    <div class="fill-row">
+        <label>Next payday:</label>
+        <div class="fill-grow"></div>
+    </div>
+
+    <p>
+        Inline fills work too. Paid <span class="fill-line short"></span>
+        out of <span class="fill-line short"></span>, leaving
+        <span class="fill-line short"></span> for the period.
+    </p>
+</section>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================
+     Page 4 — Buckets, trackers, cut-cards
+     ==================================================================== -->
+<section class="section">
+    <div class="section-header">
+        <h1 class="section-title">Specialty components</h1>
+        <span class="section-count">03 / 04</span>
+    </div>
+
+    <h2>The four-bucket grid</h2>
+    <p class="muted small">Used for Bonus 2 — money allocation by category.</p>
+    <div class="bucket-grid">
+        <div class="bucket">
+            <div class="bucket-label">Bills</div>
+            <div class="bucket-line"></div>
+            <div class="bucket-line"></div>
+            <div class="bucket-line"></div>
+        </div>
+        <div class="bucket">
+            <div class="bucket-label">Savings</div>
+            <div class="bucket-line"></div>
+            <div class="bucket-line"></div>
+            <div class="bucket-line"></div>
+        </div>
+        <div class="bucket">
+            <div class="bucket-label">Debt</div>
+            <div class="bucket-line"></div>
+            <div class="bucket-line"></div>
+            <div class="bucket-line"></div>
+        </div>
+        <div class="bucket">
+            <div class="bucket-label">Spending</div>
+            <div class="bucket-line"></div>
+            <div class="bucket-line"></div>
+            <div class="bucket-line"></div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Tracker grid</h2>
+    <p class="muted small">Used for Bonus 3 — week-by-week savings challenge.</p>
+    <table class="tracker-grid">
+        <tr>
+            <td><span class="tracker-num">01</span><span class="tracker-amount">$1</span></td>
+            <td><span class="tracker-num">02</span><span class="tracker-amount">$2</span></td>
+            <td><span class="tracker-num">03</span><span class="tracker-amount">$3</span></td>
+            <td><span class="tracker-num">04</span><span class="tracker-amount">$4</span></td>
+            <td><span class="tracker-num">05</span><span class="tracker-amount">$5</span></td>
+            <td><span class="tracker-num">06</span><span class="tracker-amount">$6</span></td>
+            <td><span class="tracker-num">07</span><span class="tracker-amount">$7</span></td>
+            <td><span class="tracker-num">08</span><span class="tracker-amount">$8</span></td>
+            <td><span class="tracker-num">09</span><span class="tracker-amount">$9</span></td>
+            <td><span class="tracker-num">10</span><span class="tracker-amount">$10</span></td>
+            <td><span class="tracker-num">11</span><span class="tracker-amount">$11</span></td>
+            <td><span class="tracker-num">12</span><span class="tracker-amount">$12</span></td>
+            <td><span class="tracker-num">13</span><span class="tracker-amount">$13</span></td>
+        </tr>
+        <tr>
+            <td><span class="tracker-num">14</span><span class="tracker-amount">$14</span></td>
+            <td><span class="tracker-num">15</span><span class="tracker-amount">$15</span></td>
+            <td><span class="tracker-num">16</span><span class="tracker-amount">$16</span></td>
+            <td><span class="tracker-num">17</span><span class="tracker-amount">$17</span></td>
+            <td><span class="tracker-num">18</span><span class="tracker-amount">$18</span></td>
+            <td><span class="tracker-num">19</span><span class="tracker-amount">$19</span></td>
+            <td><span class="tracker-num">20</span><span class="tracker-amount">$20</span></td>
+            <td><span class="tracker-num">21</span><span class="tracker-amount">$21</span></td>
+            <td><span class="tracker-num">22</span><span class="tracker-amount">$22</span></td>
+            <td><span class="tracker-num">23</span><span class="tracker-amount">$23</span></td>
+            <td><span class="tracker-num">24</span><span class="tracker-amount">$24</span></td>
+            <td><span class="tracker-num">25</span><span class="tracker-amount">$25</span></td>
+            <td><span class="tracker-num">26</span><span class="tracker-amount">$26</span></td>
+        </tr>
+    </table>
+</section>
+
+<section class="section">
+    <h2>Cut-card (wallet size)</h2>
+    <p class="muted small">Used for Bonus 4 — printable pause-questions card.</p>
+    <div class="cut-card">
+        <span class="eyebrow">Before you buy</span>
+        <h3 style="margin-top: 0.05in;">The four questions</h3>
+        <ol style="margin: 0.05in 0 0 0.16in; padding: 0; font-size: 9.5pt;">
+            <li>Will I use this in the next 7 days?</li>
+            <li>What does it cost in hours of work?</li>
+            <li>Where will it live in my home?</li>
+            <li>Could I wait 24 hours and still want it?</li>
+        </ol>
+    </div>
+</section>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================
+     Page 5 — Tables + big type
+     ==================================================================== -->
+<section class="section">
+    <div class="section-header">
+        <h1 class="section-title">Tables &amp; emphasis</h1>
+        <span class="section-count">04 / 04</span>
+    </div>
+
+    <h2>Data table</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Category</th>
+                <th class="num">Amount</th>
+                <th class="num">Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Rent</td>
+                <td>Housing</td>
+                <td class="num">$1,200.00</td>
+                <td class="num">$650.00</td>
+            </tr>
+            <tr>
+                <td>Phone</td>
+                <td>Utilities</td>
+                <td class="num">$65.00</td>
+                <td class="num">$585.00</td>
+            </tr>
+            <tr>
+                <td>Streaming</td>
+                <td>Subscriptions</td>
+                <td class="num">$12.99</td>
+                <td class="num">$572.01</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Lined input table (worksheet style)</h2>
+    <table class="data-table lined-input">
+        <tr><td class="label-col">Debt name</td><td></td></tr>
+        <tr><td class="label-col">Balance</td><td></td></tr>
+        <tr><td class="label-col">Interest rate</td><td></td></tr>
+        <tr><td class="label-col">Min. payment</td><td></td></tr>
+    </table>
+</section>
+
+<section class="section">
+    <h2>Pause-list (big type)</h2>
+    <p class="muted small">Used for Bonus 4 — designed to be seen at a glance.</p>
+    <ol class="pause-list">
+        <li>Will I use this in the next seven days?</li>
+        <li>What does this cost in hours of my work?</li>
+        <li>Could I wait until tomorrow and still want it?</li>
+    </ol>
+</section>
+
+</body>
+</html>

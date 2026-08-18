@@ -1,0 +1,553 @@
+/* ===========================================================================
+   Payday Tracker — Bonus Stack design system
+   ---------------------------------------------------------------------------
+   Shared print stylesheet used by all 5 bonus PDFs. Re-imports the same
+   design language as the app ("Statement"): ink-navy accent, small-caps
+   eyebrows, tabular numerals, square-ish corners, flat surfaces.
+
+   Tuned for print:
+     - White page background (don't waste ink on full-color pages)
+     - 11pt body type (eyes need it on paper)
+     - Warm paper (#F6F4EE) used only for callout zones
+     - All hierarchy carried by weight + size so B&W printing still works
+     - Page bar across the top ties the 5 bonuses together as a series
+
+   Rendered via wkhtmltopdf with --print-media-type --enable-local-file-access.
+   =========================================================================== */
+
+/* ---- Page setup --------------------------------------------------------- */
+@page {
+    size: Letter;
+    margin: 0.6in 0.55in;
+}
+
+/* ---- Tokens ------------------------------------------------------------- */
+:root {
+    --bg: #FFFFFF;
+    --surface-warm: #F6F4EE;          /* used only for callout zones */
+    --surface-sunken: #FAF8F3;        /* table headers, mild shading */
+
+    --text: #15171C;
+    --text-soft: #3D424D;
+    --text-muted: #5B5F6B;
+    --text-faint: #8E8F94;
+
+    --border: #DCD6C6;
+    --border-strong: #BAB1A0;
+    --rule: #15171C;                   /* heavyweight horizontal rules */
+
+    --accent: #0F4C81;                 /* deep navy */
+    --accent-soft: #DCE5F1;
+    --positive: #1F6F46;
+    --negative: #A23123;
+    --warning: #A86E13;
+
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                  "Helvetica Neue", Arial, sans-serif;
+    --tracking-caps: 0.10em;
+}
+
+/* ---- Base --------------------------------------------------------------- */
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 11pt;
+    line-height: 1.5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+p { margin: 0 0 0.55em; }
+
+strong { font-weight: 600; }
+
+/* Avoid widows/orphans and broken headings */
+h1, h2, h3, h4 {
+    page-break-after: avoid;
+    break-after: avoid-page;
+    margin: 0;
+    color: var(--text);
+    letter-spacing: -0.012em;
+    line-height: 1.2;
+}
+
+/* ---- Cover bar (FIRST PAGE ONLY) --------------------------------------- */
+/* A bold navy bar across the top of the cover page, identifying the bonus
+   number + name. NOT used on subsequent pages — wkhtmltopdf can't reliably
+   render colored elements that cross page boundaries. The wkhtmltopdf
+   footer carries brand identity on content pages instead. */
+.cover-bar {
+    background: var(--accent);
+    color: #fff;
+    padding: 0.2in 0.22in;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5in;
+}
+.cover-bar .series-mark {
+    display: inline-block;
+    width: 9pt;
+    height: 9pt;
+    background: #fff;
+    margin-right: 8pt;
+    vertical-align: 0;
+}
+.cover-bar .series-label {
+    font-size: 8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: rgba(255, 255, 255, 0.78);
+}
+.cover-bar .series-title {
+    font-size: 8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: #fff;
+}
+
+/* ---- Cover (first-page-only treatment) --------------------------------- */
+.cover {
+    padding: 1.2in 0 0.5in;
+}
+.cover .cover-eyebrow {
+    font-size: 9pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: var(--accent);
+    margin-bottom: 0.4in;
+}
+.cover h1 {
+    font-size: 32pt;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.18in;
+    max-width: 5.8in;
+}
+.cover .cover-deck {
+    font-size: 13pt;
+    color: var(--text-soft);
+    max-width: 5in;
+    font-weight: 400;
+    line-height: 1.45;
+}
+.cover .cover-footer {
+    margin-top: 1in;
+    border-top: 1pt solid var(--rule);
+    padding-top: 0.18in;
+    font-size: 9pt;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* ---- Typography scale (within content pages) --------------------------- */
+h1.section-title {
+    font-size: 20pt;
+    font-weight: 700;
+    margin-bottom: 0.1in;
+    letter-spacing: -0.018em;
+}
+h2 {
+    font-size: 13pt;
+    font-weight: 600;
+    margin: 0.28in 0 0.08in;
+}
+h3 {
+    font-size: 10.5pt;
+    font-weight: 600;
+    margin: 0.18in 0 0.04in;
+}
+
+.deck {
+    font-size: 11pt;
+    color: var(--text-soft);
+    margin-bottom: 0.25in;
+}
+
+/* ---- Eyebrows (small caps section labels) ------------------------------ */
+.eyebrow {
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.06in;
+}
+.eyebrow.muted { color: var(--text-muted); }
+
+/* ---- Tabular numerals on money ----------------------------------------- */
+.amount, .num {
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+}
+
+/* ---- Horizontal rules: thick = primary, thin = secondary --------------- */
+hr.rule-heavy {
+    border: 0;
+    border-top: 2pt solid var(--rule);
+    margin: 0.2in 0;
+}
+hr.rule-light {
+    border: 0;
+    border-top: 0.5pt solid var(--border);
+    margin: 0.15in 0;
+}
+
+/* ---- Cards / callout boxes --------------------------------------------- */
+/* Warm paper background — used only when a section is genuinely a
+   "stop and read this" zone. */
+.callout {
+    background: var(--surface-warm);
+    border-left: 3pt solid var(--accent);
+    padding: 0.18in 0.22in;
+    margin: 0.15in 0 0.2in;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+.callout .eyebrow { margin-bottom: 0.04in; }
+.callout p:last-child { margin-bottom: 0; }
+
+.callout-warning {
+    background: #FBF1E0;
+    border-left-color: var(--warning);
+}
+.callout-warning .eyebrow { color: var(--warning); }
+
+.callout-danger {
+    background: #F8E7E4;
+    border-left-color: var(--negative);
+}
+.callout-danger .eyebrow { color: var(--negative); }
+
+/* ---- Checklists (Bonus 1 + others) ------------------------------------- */
+.checklist {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.checklist > li {
+    position: relative;
+    padding: 0.13in 0 0.13in 0.36in;
+    border-bottom: 0.5pt solid var(--border);
+    break-inside: avoid;
+}
+.checklist > li:last-child { border-bottom: 0; }
+.checklist > li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.16in;
+    width: 0.18in;
+    height: 0.18in;
+    border: 1pt solid var(--rule);
+    border-radius: 1pt;
+}
+.checklist .item-title {
+    font-weight: 600;
+    color: var(--text);
+    display: block;
+    margin-bottom: 0.02in;
+}
+.checklist .item-note {
+    font-size: 9.5pt;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* Bigger checkbox variant for printable reset checklists */
+.checklist-big > li {
+    padding: 0.18in 0 0.18in 0.5in;
+}
+.checklist-big > li::before {
+    width: 0.26in;
+    height: 0.26in;
+    top: 0.18in;
+}
+
+/* ---- Section groupings ------------------------------------------------- */
+/* No page-break-inside:avoid here on purpose — sections often span pages
+   naturally, and forcing them whole creates trailing blank pages. Use the
+   `.no-break` class on individual elements (callouts, list items) when you
+   need a specific chunk to stay together. */
+.section {
+    margin-bottom: 0.3in;
+}
+/* Strip trailing margin so the document doesn't push overflow onto a
+   phantom blank page at the end. */
+.section:last-of-type,
+body > section:last-child,
+body > div:last-child {
+    margin-bottom: 0;
+}
+.section-header {
+    border-bottom: 1.5pt solid var(--rule);
+    padding-bottom: 0.06in;
+    margin-bottom: 0.15in;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+.section-header .section-count {
+    font-size: 9pt;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---- Tables ------------------------------------------------------------ */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10pt;
+    margin: 0.1in 0;
+}
+.data-table th {
+    text-align: left;
+    padding: 0.08in 0.06in;
+    border-bottom: 1.5pt solid var(--rule);
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: var(--text-muted);
+}
+.data-table td {
+    padding: 0.09in 0.06in;
+    border-bottom: 0.5pt solid var(--border);
+    vertical-align: top;
+}
+.data-table tr:last-child td { border-bottom: 0; }
+.data-table td.num, .data-table th.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums lining-nums;
+}
+.data-table.lined-input td {
+    border-bottom: 0.5pt solid var(--rule);
+    height: 0.4in;
+}
+.data-table.lined-input td.label-col {
+    width: 1.4in;
+    color: var(--text-muted);
+    font-size: 9.5pt;
+}
+
+/* ---- Fill-in lines (worksheets) ---------------------------------------- */
+.fill-line {
+    border-bottom: 1pt solid var(--rule);
+    display: inline-block;
+    min-width: 1.6in;
+    height: 1.2em;
+    vertical-align: -0.2em;
+    margin: 0 0.06in;
+}
+.fill-line.short { min-width: 0.7in; }
+.fill-line.long  { min-width: 3.2in; }
+
+/* Block-style fill-in (a row with a label and a long line) */
+.fill-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.1in;
+    margin-bottom: 0.18in;
+}
+.fill-row label {
+    font-size: 8.5pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: var(--text-muted);
+    flex: 0 0 auto;
+    padding-bottom: 0.02in;
+}
+.fill-row .fill-grow {
+    flex: 1 1 auto;
+    border-bottom: 1pt solid var(--rule);
+    height: 1.3em;
+}
+
+/* ---- Bucket / column layout (Bonus 2) ---------------------------------- */
+.bucket-grid {
+    display: flex;
+    gap: 0.1in;
+    margin: 0.15in 0 0.25in;
+}
+.bucket {
+    flex: 1 1 0;
+    border: 1pt solid var(--rule);
+    padding: 0.12in;
+    page-break-inside: avoid;
+}
+.bucket .bucket-label {
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    margin-bottom: 0.06in;
+    color: var(--accent);
+}
+.bucket .bucket-line {
+    border-bottom: 1pt solid var(--rule);
+    height: 0.32in;
+    margin-bottom: 0.04in;
+}
+
+/* ---- Tracker grid (Bonus 3 — savings challenge) ------------------------ */
+/* A real <table> for the savings challenge tracker — old WebKit can't be
+   trusted with CSS Grid for equal-cell layouts, but tables are bulletproof
+   and have been since 1996. */
+table.tracker-grid {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin: 0.12in 0;
+}
+table.tracker-grid td {
+    border: 0.7pt solid var(--rule);
+    padding: 0.05in 0.03in 0.04in;
+    text-align: center;
+    height: 0.5in;
+    vertical-align: top;
+    page-break-inside: avoid;
+}
+table.tracker-grid .tracker-num {
+    font-size: 6.5pt;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    display: block;
+}
+table.tracker-grid .tracker-amount {
+    font-size: 8pt;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums lining-nums;
+    display: block;
+    margin-top: 0.04in;
+}
+
+/* ---- Wallet card / cut-out (Bonus 4) ----------------------------------- */
+.cut-card {
+    border: 1pt dashed var(--rule);
+    padding: 0.18in 0.2in;
+    width: 3.4in;       /* roughly business-card width */
+    height: 2.1in;      /* roughly business-card height */
+    page-break-inside: avoid;
+    margin: 0.1in 0 0.25in;
+    position: relative;
+}
+.cut-card::before {
+    content: "✂  CUT HERE";
+    position: absolute;
+    top: -0.13in;
+    left: 0;
+    font-size: 7pt;
+    color: var(--text-muted);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    background: #fff;
+    padding: 0 0.06in;
+}
+
+/* ---- Footer (page number + brand) -------------------------------------- */
+/* Note: wkhtmltopdf adds the real page footer via CLI flag; this is
+   visual-only fallback for browser preview. */
+.page-footer {
+    position: running(footer);
+    border-top: 0.5pt solid var(--border);
+    margin-top: 0.3in;
+    padding-top: 0.08in;
+    font-size: 8pt;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* ---- Utilities --------------------------------------------------------- */
+.muted { color: var(--text-muted); }
+.small { font-size: 9pt; }
+.numeric { font-variant-numeric: tabular-nums lining-nums; }
+.text-accent { color: var(--accent); }
+.text-positive { color: var(--positive); }
+.text-negative { color: var(--negative); }
+
+.center { text-align: center; }
+.right  { text-align: right; }
+
+.spacer-sm { height: 0.1in; }
+.spacer-md { height: 0.2in; }
+.spacer-lg { height: 0.35in; }
+
+/* Page break controls — use sparingly */
+.page-break    { page-break-before: always; break-before: page; }
+.no-break      { page-break-inside: avoid; break-inside: avoid; }
+.keep-together { page-break-inside: avoid; break-inside: avoid; }
+
+/* ---- Two-column layout (used for tips lists etc) ---------------------- */
+.two-col {
+    columns: 2;
+    column-gap: 0.3in;
+    column-rule: 0.5pt solid var(--border);
+}
+.two-col > * { break-inside: avoid; }
+
+/* ---- Numbered steps ---------------------------------------------------- */
+.steps {
+    counter-reset: stepcount;
+    list-style: none;
+    padding: 0;
+    margin: 0.15in 0;
+}
+.steps > li {
+    counter-increment: stepcount;
+    position: relative;
+    padding: 0 0 0.18in 0.42in;
+    page-break-inside: avoid;
+}
+.steps > li::before {
+    content: counter(stepcount, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 13pt;
+    font-weight: 700;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums lining-nums;
+    line-height: 1;
+}
+
+/* ---- "Pause questions" big-type list (Bonus 4 only) -------------------- */
+.pause-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.2in 0;
+    counter-reset: pausecount;
+}
+.pause-list > li {
+    counter-increment: pausecount;
+    padding: 0.2in 0 0.2in 0.5in;
+    border-bottom: 0.5pt solid var(--border);
+    position: relative;
+    font-size: 14pt;
+    font-weight: 500;
+    line-height: 1.3;
+    page-break-inside: avoid;
+}
+.pause-list > li:last-child { border-bottom: 0; }
+.pause-list > li::before {
+    content: counter(pausecount) ".";
+    position: absolute;
+    left: 0;
+    top: 0.2in;
+    font-size: 14pt;
+    font-weight: 700;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums lining-nums;
+}

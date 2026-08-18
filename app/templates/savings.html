@@ -1,0 +1,32 @@
+<h1>Savings goals</h1>
+<p class="muted">Name what you're saving for, set a target, watch progress climb.</p>
+
+$error_block
+
+$goals_html
+
+<details class="card" open>
+    <summary><h2 style="display:inline">Create a new goal</h2></summary>
+    <form method="post" action="/savings">
+        <input type="hidden" name="csrf_token" value="$csrf_token">
+        <div class="form-grid">
+            <label>
+                <span>Goal name</span>
+                <input type="text" name="name" required maxlength="120" placeholder="Emergency fund, Vacation…">
+            </label>
+            <label>
+                <span>Target amount</span>
+                <input type="text" name="target_amount" required placeholder="1000.00">
+            </label>
+            <label>
+                <span>Deadline (optional)</span>
+                <input type="date" name="deadline">
+            </label>
+        </div>
+        <label>
+            <span>Notes (optional)</span>
+            <textarea name="notes" rows="2"></textarea>
+        </label>
+        <button type="submit" class="primary">Create goal</button>
+    </form>
+</details>

@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The No-Guilt Spending Plan — Payday Tracker</title>
+<link rel="stylesheet" href="../shared/print.css">
+<style>
+/* Bonus-2-specific tweaks. */
+
+/* Concept buckets on page 1 — 4 columns side-by-side, each with a numbered
+   header and a short explanation. */
+.concept-grid {
+    display: flex;
+    gap: 0.12in;
+    margin: 0.15in 0 0.2in;
+}
+.concept-bucket {
+    flex: 1 1 0;
+    border: 1pt solid var(--rule);
+    padding: 0.12in 0.12in 0.14in;
+    page-break-inside: avoid;
+}
+.concept-bucket.protected {
+    background: var(--surface-warm);
+}
+.concept-bucket.spending {
+    border: 1.5pt solid var(--accent);
+    background: var(--accent-soft);
+}
+.concept-bucket .bucket-num {
+    font-size: 8pt;
+    font-weight: 700;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+}
+.concept-bucket .bucket-name {
+    font-size: 12pt;
+    font-weight: 700;
+    margin: 0.04in 0 0.06in;
+    letter-spacing: -0.01em;
+}
+.concept-bucket p {
+    font-size: 9pt;
+    color: var(--text-soft);
+    line-height: 1.4;
+    margin: 0;
+}
+.concept-bucket.spending .bucket-name { color: var(--accent); }
+.concept-bucket .bucket-tag {
+    display: inline-block;
+    font-size: 7pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: var(--text-muted);
+    margin-top: 0.06in;
+}
+.concept-bucket.spending .bucket-tag {
+    color: var(--accent);
+}
+
+/* Worksheet buckets on page 2 — stacked vertically, each with lined item
+   rows. Item column + amount column, then subtotal. */
+.alloc-bucket {
+    border: 1pt solid var(--rule);
+    margin-bottom: 0.16in;
+    page-break-inside: avoid;
+}
+.alloc-bucket.spending {
+    border: 1.5pt solid var(--accent);
+}
+.alloc-bucket-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0.08in 0.12in;
+    background: var(--surface-sunken);
+    border-bottom: 0.5pt solid var(--rule);
+}
+.alloc-bucket.spending .alloc-bucket-head {
+    background: var(--accent-soft);
+    border-bottom-color: var(--accent);
+}
+.alloc-bucket-name {
+    font-size: 10.5pt;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+.alloc-bucket-name .num {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    margin-right: 0.06in;
+}
+.alloc-bucket-tag {
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: var(--text-muted);
+}
+.alloc-bucket.spending .alloc-bucket-tag { color: var(--accent); }
+
+.alloc-rows {
+    width: 100%;
+    border-collapse: collapse;
+}
+.alloc-rows td {
+    border-bottom: 0.5pt solid var(--border);
+    height: 0.3in;
+    padding: 0;
+}
+.alloc-rows td.item-col {
+    width: 75%;
+    border-right: 0.5pt solid var(--border);
+}
+.alloc-rows td.amt-col {
+    width: 25%;
+}
+.alloc-rows tr.subtotal td {
+    border-top: 1pt solid var(--rule);
+    border-bottom: 0;
+    height: 0.28in;
+    padding: 0.04in 0.12in;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--text);
+    background: var(--surface-sunken);
+}
+.alloc-rows tr.subtotal td.item-col {
+    border-right: 0;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    font-size: 7.5pt;
+    color: var(--text-muted);
+}
+.alloc-rows tr.subtotal td.amt-col {
+    text-align: right;
+    font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Total check at the bottom of the worksheet */
+.total-check {
+    margin-top: 0.12in;
+    padding: 0.12in 0.14in;
+    border: 1.5pt solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5in;
+}
+.total-check .check-label {
+    font-size: 8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: var(--text-muted);
+}
+.total-check .check-amount {
+    font-size: 14pt;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums lining-nums;
+    border-bottom: 1pt solid var(--rule);
+    min-width: 1.3in;
+    text-align: right;
+    padding: 0 0.1in;
+}
+
+/* Q&A list on page 3 */
+.qa-list { margin: 0.15in 0; }
+.qa-list .qa-item {
+    margin-bottom: 0.22in;
+    page-break-inside: avoid;
+}
+.qa-list .qa-q {
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 0.05in;
+    padding-left: 0.32in;
+    position: relative;
+}
+.qa-list .qa-q::before {
+    content: "Q.";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+}
+.qa-list .qa-a {
+    padding-left: 0.32in;
+    color: var(--text-soft);
+    font-size: 10pt;
+    line-height: 1.5;
+    position: relative;
+}
+.qa-list .qa-a::before {
+    content: "A.";
+    position: absolute;
+    left: 0;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+</style>
+</head>
+<body>
+
+<!-- ========================================================================
+     PAGE 1 — The philosophy + the four-bucket framework
+     ==================================================================== -->
+<header class="cover-bar">
+    <div>
+        <span class="series-mark"></span>
+        <span class="series-label">Bonus 02</span>
+    </div>
+    <span class="series-title">No-Guilt Spending Plan</span>
+</header>
+
+<section class="cover" style="padding-top: 0.4in; padding-bottom: 0.25in;">
+    <div class="cover-eyebrow">A bonus from Payday Tracker</div>
+    <h1>Spend without panic</h1>
+    <p class="cover-deck">
+        Most spending guilt comes from a simple problem: you don't know
+        which money is safe to spend. This is the fix — a four-bucket
+        framework that decides for you, before the temptation arrives.
+    </p>
+</section>
+
+<hr class="rule-heavy">
+
+<section class="section">
+    <h2 style="margin-top: 0.1in;">Why guilt happens</h2>
+    <p>
+        When every dollar in your account looks the same — bills money,
+        savings money, debt money, fun money — every purchase becomes a
+        small crisis. Was that coffee okay? Should I have gotten the
+        groceries first? What if rent is short?
+    </p>
+    <p>
+        The way out isn't more discipline. It's <strong>pre-deciding</strong>.
+        Before any money moves, every dollar of your paycheck gets a
+        label. Anything labeled <em>spending</em> is yours, with no
+        guilt attached. Anything not labeled <em>spending</em> isn't
+        available — it already has a job.
+    </p>
+</section>
+
+<section class="section">
+    <h2>The four buckets</h2>
+
+    <div class="concept-grid">
+        <div class="concept-bucket protected">
+            <span class="bucket-num">01</span>
+            <div class="bucket-name">Bills</div>
+            <p>
+                Rent, utilities, insurance, subscriptions. The
+                committed costs that hit every period.
+            </p>
+            <span class="bucket-tag">Protected</span>
+        </div>
+
+        <div class="concept-bucket protected">
+            <span class="bucket-num">02</span>
+            <div class="bucket-name">Savings</div>
+            <p>
+                Whatever you're moving toward goals or an emergency
+                buffer. Moved out of checking, not waited on.
+            </p>
+            <span class="bucket-tag">Protected</span>
+        </div>
+
+        <div class="concept-bucket protected">
+            <span class="bucket-num">03</span>
+            <div class="bucket-name">Debt</div>
+            <p>
+                Minimum payments on each active debt, plus any extra
+                you've decided to put toward debt payoff this period.
+            </p>
+            <span class="bucket-tag">Protected</span>
+        </div>
+
+        <div class="concept-bucket spending">
+            <span class="bucket-num">04</span>
+            <div class="bucket-name">Spending</div>
+            <p>
+                Everything left after the first three. Groceries, gas,
+                coffee, fun. The amount that's yours.
+            </p>
+            <span class="bucket-tag">Yours</span>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="callout">
+        <span class="eyebrow">The principle in one sentence</span>
+        <p style="margin-bottom: 0;">
+            Once Buckets 1–3 are filled, anything in Bucket 4 is yours to
+            spend on whatever you want, with no guilt — because every
+            other dollar already has a job.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <h2>How to use this</h2>
+    <p>
+        Page two is the worksheet — print one for each payday and fill
+        it in within twenty-four hours of getting paid. Page three
+        answers the questions that come up the first few times you do
+        this. The math is the same as Payday Tracker's discretionary
+        calculation; this just makes the four buckets visible on paper.
+    </p>
+</section>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================
+     PAGE 2 — The worksheet (the artifact)
+     ==================================================================== -->
+<section class="section" style="margin-bottom: 0.15in;">
+    <div class="section-header">
+        <h1 class="section-title">Your no-guilt allocation</h1>
+        <span class="section-count">one paycheck at a time</span>
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 0.15in;">
+        <tr>
+            <td style="width: 33.3%; padding-right: 0.1in;">
+                <span class="eyebrow">Date</span>
+                <div style="border-bottom: 1pt solid var(--rule); height: 0.3in;"></div>
+            </td>
+            <td style="width: 33.3%; padding: 0 0.1in;">
+                <span class="eyebrow">Paycheck amount</span>
+                <div style="border-bottom: 1pt solid var(--rule); height: 0.3in;"></div>
+            </td>
+            <td style="width: 33.3%; padding-left: 0.1in;">
+                <span class="eyebrow">Next payday</span>
+                <div style="border-bottom: 1pt solid var(--rule); height: 0.3in;"></div>
+            </td>
+        </tr>
+    </table>
+</section>
+
+<!-- Bucket 1: Bills -->
+<div class="alloc-bucket">
+    <div class="alloc-bucket-head">
+        <div class="alloc-bucket-name"><span class="num">01</span>Bills</div>
+        <span class="alloc-bucket-tag">Protected</span>
+    </div>
+    <table class="alloc-rows">
+        <tr><td class="item-col"></td><td class="amt-col"></td></tr>
+        <tr><td class="item-col"></td><td class="amt-col"></td></tr>
+        <tr><td class="item-col"></td><td class="amt-col"></td></tr>
+        <tr><td class="item-col"></td><td class="amt-col"></td></tr>
+        <tr class="subtotal">
+            <td class="item-col">Subtotal · Bills</td>
+            <td class="amt-col">$</td>
+        </tr>
+    </table>
+</div>
+
+<!-- Bucket 2: Savings -->
+<div class="alloc-bucket">
+    <div class="alloc-bucket-head">
+        <div class="alloc-bucket-name"><span class="num">02</span>Savings</div>
+        <span class="alloc-bucket-tag">Protected</span>
+    </div>
+    <table class="alloc-rows">
+        <tr><td class="item-col"></td><td class="amt-col"></td></tr>
+        <tr><td class="item-col"></td><td class="amt-col"></td></tr>
+        <tr class="subtotal">
+            <td class="item-col">Subtotal · Savings</td>
+            <td class="amt-col">$</td>
+        </tr>
+    </table>
+</div>
+
+<!-- Bucket 3: Debt -->
+<div class="alloc-bucket">
+    <div class="alloc-bucket-head">
+        <div class="alloc-bucket-name"><span class="num">03</span>Debt</div>
+        <span class="alloc-bucket-tag">Protected</span>
+    </div>
+    <table class="alloc-rows">
+        <tr><td class="item-col"></td><td class="amt-col"></td></tr>
+        <tr><td class="item-col"></td><td class="amt-col"></td></tr>
+        <tr class="subtotal">
+            <td class="item-col">Subtotal · Debt</td>
+            <td class="amt-col">$</td>
+        </tr>
+    </table>
+</div>
+
+<!-- Bucket 4: Spending — the YOURS bucket -->
+<div class="alloc-bucket spending">
+    <div class="alloc-bucket-head">
+        <div class="alloc-bucket-name"><span class="num">04</span>Spending</div>
+        <span class="alloc-bucket-tag">Yours · no guilt</span>
+    </div>
+    <table class="alloc-rows">
+        <tr><td class="item-col"></td><td class="amt-col"></td></tr>
+        <tr><td class="item-col"></td><td class="amt-col"></td></tr>
+        <tr><td class="item-col"></td><td class="amt-col"></td></tr>
+        <tr class="subtotal">
+            <td class="item-col">Subtotal · Spending</td>
+            <td class="amt-col">$</td>
+        </tr>
+    </table>
+</div>
+
+<!-- Total check -->
+<div class="total-check">
+    <span class="check-label">Total of all four buckets should equal your paycheck</span>
+    <span class="check-amount">$</span>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================
+     PAGE 3 — Common questions
+     ==================================================================== -->
+<section class="section">
+    <div class="section-header">
+        <h1 class="section-title">Common questions</h1>
+        <span class="section-count">when buckets get fuzzy</span>
+    </div>
+    <p class="deck">
+        The system is simple. Putting it into practice always raises
+        the same five or six questions. Here are the ones that come up
+        most often.
+    </p>
+</section>
+
+<section class="section qa-list">
+
+    <div class="qa-item">
+        <p class="qa-q">What if I don't have enough for all four buckets?</p>
+        <p class="qa-a">
+            Fill the buckets in order — Bills first, then Savings, then
+            Debt minimums, then Spending. If you run out before reaching
+            the spending bucket, you have a short period. Use Bonus 05
+            (the Survival Sheet) for triage, then on your next reset,
+            put even one dollar into savings to start a buffer.
+        </p>
+    </div>
+
+    <div class="qa-item">
+        <p class="qa-q">What if I want something not in my spending bucket?</p>
+        <p class="qa-a">
+            You wait. The spending bucket is your decision, made when you
+            weren't tempted. Buying something from outside it means
+            stealing from a bucket that already has a job. The point of
+            this system is to make that decision harder to reverse in
+            the moment.
+        </p>
+    </div>
+
+    <div class="qa-item">
+        <p class="qa-q">What about unexpected expenses — a flat tire, a sick kid?</p>
+        <p class="qa-a">
+            Those come out of savings if you have it, or your spending
+            bucket if you don't. The whole point of the savings bucket
+            is to absorb these. If you keep getting hit by "unexpected"
+            expenses, look at what they are — some are predictable
+            (car maintenance, gifts, medical co-pays) and belong in their
+            own sub-bucket inside Bills or Savings.
+        </p>
+    </div>
+
+    <div class="qa-item">
+        <p class="qa-q">My spending bucket is really small. What do I do?</p>
+        <p class="qa-a">
+            That's information, not failure. A small spending bucket
+            usually means your bills are too high relative to your
+            income, or you're paying down debt aggressively, or both.
+            Three options: increase income, cut a recurring bill, or
+            slow the debt paydown temporarily so there's more room
+            in spending. The bucket numbers tell you which lever to pull.
+        </p>
+    </div>
+
+    <div class="qa-item">
+        <p class="qa-q">What if I have a partner who spends differently?</p>
+        <p class="qa-a">
+            Two options that both work. <em>One:</em> split the spending
+            bucket — half is yours, half is theirs, both no-guilt for
+            the person who owns it. <em>Two:</em> keep one shared
+            spending bucket but agree on categories ("eating out
+            together is shared; coffee for one person is from their
+            half"). The conversation matters more than the structure.
+        </p>
+    </div>
+
+    <div class="qa-item">
+        <p class="qa-q">What if I have money left over at the end of the period?</p>
+        <p class="qa-a">
+            Move it. Toward savings, toward a debt, toward the next
+            period's spending bucket if you've got a one-time expense
+            coming up. Don't let it sit in checking — it'll quietly
+            become "extra spending money" and the no-guilt system
+            stops working. Money without a job ends up wasted.
+        </p>
+    </div>
+
+</section>
+
+<section class="section">
+    <div class="callout">
+        <span class="eyebrow">The point, said one more time</span>
+        <p style="margin-bottom: 0;">
+            You are allowed to spend money. The system isn't a punishment
+            — it's a way of deciding once, when you're calm, so you don't
+            have to decide ten times a week when you're tired. The
+            spending bucket is real money that's yours to enjoy.
+        </p>
+    </div>
+</section>
+
+</body>
+</html>

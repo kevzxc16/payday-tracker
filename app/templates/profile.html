@@ -1,0 +1,44 @@
+<h1>Profile</h1>
+<p class="muted">Account settings and pay schedule.</p>
+
+$error_block
+$info_block
+
+<div class="card">
+    <h2>Account</h2>
+    <p><strong>Email:</strong> $email</p>
+    <p><strong>Tier:</strong> $tier</p>
+</div>
+
+<form method="post" action="/profile" class="card">
+    <input type="hidden" name="csrf_token" value="$csrf_token">
+    <h2>Update settings</h2>
+    <label>
+        <span>Display name (optional)</span>
+        <input type="text" name="display_name" value="$display_name" maxlength="80">
+    </label>
+    <label>
+        <span>Pay schedule</span>
+        <select name="pay_schedule" required>
+            <option value="weekly" $weekly_selected>Weekly</option>
+            <option value="biweekly" $biweekly_selected>Biweekly</option>
+            <option value="monthly" $monthly_selected>Monthly</option>
+        </select>
+    </label>
+    <label>
+        <span>First (or most recent) payday</span>
+        <input type="date" name="first_payday" value="$first_payday" required>
+        <small>This anchors all future payday calculations.</small>
+    </label>
+    <label>
+        <span>Timezone</span>
+        <input type="text" name="timezone" value="$timezone" maxlength="64">
+        <small>Used for reminders. Examples: America/New_York, Asia/Manila.</small>
+    </label>
+    <button type="submit" class="primary">Save changes</button>
+</form>
+
+<form method="post" action="/logout" class="inline-form">
+    <input type="hidden" name="csrf_token" value="$csrf_token">
+    <button type="submit" class="secondary">Log out</button>
+</form>

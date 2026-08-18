@@ -1,0 +1,1343 @@
+/* ===========================================================================
+   Payday Tracker — Statement
+   ---------------------------------------------------------------------------
+   A budgeting app for people who care about *when* their money arrives, not
+   just how much. The signature device is the pay-period progress track on
+   the dashboard: a horizontal "you are here" line between paydays.
+
+   Design tokens are CSS custom properties; everything below is derived.
+   Dark mode is handled via `prefers-color-scheme` swapping the same names.
+   =========================================================================== */
+
+/* ---- 1. Tokens ---------------------------------------------------------- */
+:root {
+    /* Surface */
+    --bg: #F6F4EE;            /* warm bone — between cream and paper */
+    --surface: #FFFFFF;       /* pure white for cards reads as separation */
+    --surface-2: #FAF8F3;     /* off-surface for nested zones */
+
+    /* Ink */
+    --text: #15171C;          /* near-black with a faint blue lean */
+    --text-soft: #3D424D;
+    --text-muted: #5B5F6B;
+    --text-faint: #8E8F94;
+
+    /* Lines */
+    --border: #E1DBCD;        /* warm hairline */
+    --border-strong: #C9C0AB;
+
+    /* Accents — one confident hue, plus task-specific tones */
+    --accent: #0F4C81;        /* deep navy. used for emphasis + links */
+    --accent-soft: #DCE5F1;
+    --accent-hover: #0A3960;
+
+    --positive: #1F6F46;
+    --positive-soft: #DCEBE0;
+    --negative: #A23123;
+    --negative-soft: #F2DDD8;
+    --warning: #A86E13;
+    --warning-soft: #F4E5C6;
+
+    /* Geometry */
+    --radius: 6px;
+    --radius-sm: 4px;
+    --radius-pill: 999px;
+
+    /* Type */
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    --tracking-tight: -0.011em;
+    --tracking-caps: 0.08em;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #0E1014;
+        --surface: #181B22;
+        --surface-2: #1F222B;
+
+        --text: #ECEBE5;
+        --text-soft: #BDBDC2;
+        --text-muted: #8A8E99;
+        --text-faint: #5B5F69;
+
+        --border: #272B33;
+        --border-strong: #383D47;
+
+        --accent: #6FA8E2;
+        --accent-soft: #1A2A40;
+        --accent-hover: #99C0EE;
+
+        --positive: #6FBE8A;
+        --positive-soft: #1B2F23;
+        --negative: #E08075;
+        --negative-soft: #3A201D;
+        --warning: #DCAE56;
+        --warning-soft: #3A2D14;
+    }
+}
+
+/* ---- 2. Reset & base ---------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--text);
+    background: var(--bg);
+    letter-spacing: var(--tracking-tight);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+::selection { background: var(--accent); color: #fff; }
+
+/* ---- 3. Typography ------------------------------------------------------ */
+h1, h2, h3, h4 {
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin: 0;
+    color: var(--text);
+}
+h1 { font-size: 1.625rem; }
+h2 { font-size: 1.125rem; }
+h3 { font-size: 0.975rem; }
+
+p { margin: 0 0 0.6rem; }
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 120ms ease, color 120ms ease;
+}
+a:hover { border-bottom-color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+.muted { color: var(--text-muted); }
+.small { font-size: 0.825rem; }
+
+/* Small-caps eyebrows are the structural "what kind of thing is this" marker.
+   Used on KPI labels, table headers, section eyebrows. */
+.eyebrow,
+.kpi-label,
+.data-table th {
+    font-size: 0.685rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: var(--text-muted);
+}
+
+/* Tabular nums + lining nums make money columns align perfectly, and read
+   like the ledger this app actually is. */
+.amount,
+.kpi-value,
+.data-table td.amount,
+.data-table th.amount {
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+}
+
+/* ---- Group dividers ---------------------------------------------------- */
+/* Used on the bills page to split unpaid bills into "Before next payday"
+   and "After next payday" sections, with a third "Recently paid" section
+   below. Magazine-style: small-caps label on the left, dollar total
+   right-aligned, heavyweight bottom rule. */
+.group-divider {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.6rem 0 0.45rem;
+    margin: 1.5rem 0 0.5rem;
+    border-bottom: 2px solid var(--text);
+    flex-wrap: wrap;
+}
+.group-divider:first-child { margin-top: 0; }
+.group-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: var(--text);
+}
+.group-sublabel {
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: none;
+    letter-spacing: 0;
+    margin-left: 0.4em;
+    font-size: 0.85em;
+}
+.group-total {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text);
+}
+
+/* Compact variant used inside the dashboard mini-panel — a thin row that
+   separates "Before next payday" from "After next payday" without the
+   heavy editorial treatment. */
+.plain-list li.group-row {
+    border-bottom: 1px solid var(--text);
+    padding: 0.5rem 0 0.25rem;
+    margin-top: 0.25rem;
+    color: var(--text-muted);
+}
+.plain-list li.group-row:first-child {
+    padding-top: 0;
+    margin-top: 0;
+}
+.group-label-small {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: var(--text);
+}
+.group-total-small {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-left: auto;
+}
+
+/* ---- 4. Header / nav ---------------------------------------------------- */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0.9rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.site-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    border-bottom: none;
+    letter-spacing: -0.01em;
+}
+.site-title::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    margin-right: 0.5rem;
+    vertical-align: 1px;
+    /* Mark — a small ink dot identifying the brand. Square = "measured". */
+}
+
+.site-nav {
+    display: flex;
+    gap: 0.1rem;
+    margin-left: auto;
+    flex-wrap: wrap;
+}
+.site-nav a {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    border: none;
+    border-radius: var(--radius-sm);
+    transition: color 120ms ease, background 120ms ease;
+}
+.site-nav a:hover {
+    color: var(--text);
+    background: var(--surface);
+    border-bottom: none;
+}
+.site-nav a.active {
+    color: var(--accent);
+    background: var(--accent-soft);
+}
+
+/* ---- 5. Container & layout --------------------------------------------- */
+.container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 1.75rem 1.5rem 4rem;
+}
+
+.dashboard-header {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+.dashboard-header .dashboard-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+}
+
+/* ---- 6. SIGNATURE: pay-period progress track --------------------------- */
+/* The one element this app should be remembered by. Shows where today
+   sits between the two paydays as a continuous horizontal line.
+   Read top to bottom: dates → progress bar → days remaining. */
+.period-indicator {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem 1.25rem;
+    margin: 1.25rem 0 1.75rem;
+}
+.period-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.85rem;
+    flex-wrap: wrap;
+}
+.period-pole {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+.period-pole.end { text-align: right; }
+.period-pole strong {
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums lining-nums;
+    letter-spacing: -0.01em;
+}
+
+.period-track {
+    position: relative;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: visible;
+}
+.period-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: var(--accent);
+    border-radius: 2px 0 0 2px;
+    transition: width 400ms ease;
+}
+/* The "you are here" marker — a circle riding on the line at today's
+   position. Outlined with the page background so it visually pops off
+   the track even on dark mode. */
+.period-today {
+    position: absolute;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 1px var(--accent);
+}
+.period-today-label {
+    position: absolute;
+    top: 18px;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+}
+
+/* ---- 7. Cards ---------------------------------------------------------- */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.4rem;
+    margin: 1.25rem 0;
+}
+.card > h2:first-child,
+.card > summary > h2 {
+    margin-bottom: 1rem;
+}
+.card summary {
+    cursor: pointer;
+    list-style: none;
+    margin-bottom: 1rem;
+    position: relative;
+    padding-right: 1.5rem;
+}
+.card summary::-webkit-details-marker { display: none; }
+.card summary::after {
+    content: "+";
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    transition: transform 150ms ease;
+}
+.card[open] summary::after { content: "−"; }
+
+/* ---- 8. KPI grid ------------------------------------------------------- */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 0.75rem;
+    margin: 1.25rem 0 1.75rem;
+}
+.kpi-grid.two-up {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+.kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.15rem 1.2rem;
+    position: relative;
+}
+/* The colored left bar identifies category at a glance without taking
+   space from the number itself. Default is no bar; modifier classes add
+   one. */
+.kpi-card.single { max-width: 320px; }
+
+.kpi-label {
+    display: block;
+    margin-bottom: 0.55rem;
+}
+.kpi-value {
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+}
+.kpi-card small {
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.kpi-good .kpi-value { color: var(--positive); }
+.kpi-bad  .kpi-value { color: var(--negative); }
+
+/* ---- 9. Dashboard panel grid ------------------------------------------- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+.dashboard-grid .card { margin: 0; }
+.dashboard-grid h2 {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+/* ---- 10. Plain list ---------------------------------------------------- */
+.plain-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.plain-list li {
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+}
+/* margin fallback for engines that don't support `gap` on flex */
+.plain-list li > * + * { margin-left: 0.55rem; }
+@supports (gap: 1rem) {
+    .plain-list li > * + * { margin-left: 0; }
+}
+.plain-list li:last-child { border-bottom: 0; padding-bottom: 0; }
+.plain-list li:first-child { padding-top: 0; }
+.plain-list .amount { margin-left: auto; }
+@supports (gap: 1rem) {
+    .plain-list .amount { margin-left: auto; }
+}
+.plain-list.small li { padding: 0.4rem 0; font-size: 0.875rem; }
+
+/* Mini goals/debts list items get progress bars */
+.goal-mini-header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.3rem;
+}
+.goal-mini-header strong { font-weight: 600; }
+
+/* ---- 11. Data tables --------------------------------------------------- */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+.data-table th {
+    text-align: left;
+    padding: 0.6rem 0.5rem;
+    border-bottom: 2px solid var(--text);
+    font-size: 0.685rem;
+    color: var(--text-muted);
+    /* eyebrow styling inherited via global rule */
+}
+.data-table td {
+    padding: 0.7rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+.data-table tr:last-child td { border-bottom: 0; }
+.data-table td.amount,
+.data-table th.amount { text-align: right; }
+.data-table td.actions {
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* ---- 12. Tags — minimal markers, not pills ----------------------------- */
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--text-muted);
+}
+.tag::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+.tag-green  { color: var(--positive); border-color: var(--positive); background: var(--positive-soft); }
+.tag-yellow { color: var(--warning);  border-color: var(--warning);  background: var(--warning-soft); }
+.tag-red    { color: var(--negative); border-color: var(--negative); background: var(--negative-soft); }
+.tag-blue   { color: var(--accent);   border-color: var(--accent);   background: var(--accent-soft); }
+.tag-gray   { color: var(--text-muted); }
+
+/* ---- 13. Forms --------------------------------------------------------- */
+form label,
+form.card label {
+    display: block;
+    margin-bottom: 1rem;
+}
+form label span {
+    display: block;
+    font-weight: 500;
+    font-size: 0.825rem;
+    color: var(--text-soft);
+    margin-bottom: 0.3rem;
+}
+form label small {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    margin-top: 0.3rem;
+}
+form label.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+form label.checkbox span {
+    margin: 0;
+    font-weight: 400;
+    color: var(--text);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    align-items: stretch;
+}
+.form-grid label {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+}
+/* Push the input to the bottom of its grid cell so multi-line labels
+   don't shove their input down relative to neighbors. */
+.form-grid label > input,
+.form-grid label > select,
+.form-grid label > textarea {
+    margin-top: auto;
+}
+
+input[type=email],
+input[type=password],
+input[type=text],
+input[type=number],
+input[type=date],
+select,
+textarea {
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.92rem;
+    font-family: var(--font-sans);
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+input::placeholder, textarea::placeholder { color: var(--text-faint); }
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+textarea { resize: vertical; min-height: 64px; }
+
+/* ---- 14. Buttons — flat, no shadow, two clear states ------------------- */
+button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+    letter-spacing: var(--tracking-tight);
+}
+button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+button.small {
+    padding: 0.3rem 0.65rem;
+    font-size: 0.8rem;
+}
+
+button.primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+button.secondary {
+    background: transparent;
+    color: var(--text);
+    border-color: var(--border-strong);
+}
+button.secondary:hover { background: var(--surface-2); border-color: var(--text-muted); }
+
+button.danger-link {
+    background: transparent;
+    color: var(--negative);
+    border-color: transparent;
+    padding-left: 0;
+    padding-right: 0;
+}
+button.danger-link:hover {
+    background: transparent;
+    border-color: transparent;
+    text-decoration: underline;
+}
+
+.inline-form { display: inline-block; margin: 0; }
+.inline-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin: 0.75rem 0;
+}
+.inline-row input[type=text],
+.inline-row input[type=date] {
+    width: auto;
+    min-width: 110px;
+    flex: 1 1 auto;
+}
+
+/* ---- 15. Alerts -------------------------------------------------------- */
+.alert {
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+}
+.alert-error {
+    background: var(--negative-soft);
+    border-color: var(--negative);
+    color: var(--negative);
+}
+.alert-info {
+    background: var(--positive-soft);
+    border-color: var(--positive);
+    color: var(--positive);
+}
+
+/* ---- 16. Goal & debt cards -------------------------------------------- */
+.goal-card, .debt-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.35rem;
+    margin-bottom: 1rem;
+}
+.goal-header, .debt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.4rem;
+}
+.goal-header h3, .debt-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.goal-header p, .debt-header p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.86rem;
+}
+.goal-progress { margin: 0.85rem 0 1rem; }
+.goal-progress p { margin: 0.45rem 0 0; font-size: 0.92rem; }
+.goal-progress .plan-line {
+    margin-top: 0.4rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.875rem;
+    color: var(--text-soft);
+}
+.goal-progress .plan-line strong {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums lining-nums;
+}
+.goal-progress .plan-line .tag { margin-right: 0.35rem; }
+
+/* ---- 17. Progress bars ------------------------------------------------- */
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.progress-bar.small { height: 3px; }
+.progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: inherit;
+    transition: width 400ms ease;
+}
+.progress-fill.green { background: var(--positive); }
+
+/* ---- 18. Misc ---------------------------------------------------------- */
+code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--surface-2);
+    padding: 0.1em 0.3em;
+    border-radius: var(--radius-sm);
+}
+
+.site-footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+/* details/summary outside .card */
+details summary { cursor: pointer; }
+
+/* ---- 19. Auth pages — narrow centered column --------------------------- */
+.auth-container {
+    max-width: 420px;
+    margin: 3.5rem auto;
+    padding: 0 1.5rem 3rem;
+}
+.auth-container .card {
+    padding: 2rem;
+}
+
+/* When the page is an auth page, override the wide container layout */
+body.auth .container {
+    max-width: 440px;
+    margin: 4rem auto 2rem;
+    padding: 0 1.5rem 3rem;
+}
+body.auth .container > h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+body.auth .container > p {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+body.auth .container .card {
+    padding: 1.75rem 1.75rem 1.5rem;
+}
+body.auth .container .card button.primary {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    font-size: 0.95rem;
+}
+/* Subdued nav on auth pages — links are still there for navigation but
+   without the active-state chrome since no page is "active" here. */
+body.auth .site-nav { display: none; }
+body.auth .site-header { padding: 1rem 1.5rem; }
+
+/* ---- 20. Responsive ---------------------------------------------------- */
+@media (max-width: 640px) {
+    .container { padding: 1.25rem 1rem 3rem; }
+    .site-header { padding: 0.75rem 1rem; }
+    .site-nav { width: 100%; gap: 0; }
+    .site-nav a { padding: 0.4rem 0.55rem; font-size: 0.82rem; }
+    .kpi-value { font-size: 1.4rem; }
+    .period-row { flex-direction: column; gap: 0.5rem; }
+    .period-pole.end { text-align: left; }
+    .data-table { font-size: 0.85rem; }
+}
+
+/* ---- 21. Reduced motion ------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+
+/* ===========================================================================
+   22. Landing page — public marketing surface
+   ---------------------------------------------------------------------------
+   Reuses the same design tokens as the app, but with marketing-page
+   treatments: larger type, more vertical rhythm, generous whitespace,
+   no app chrome. Hide the existing site-header/nav on body.marketing.
+   =========================================================================== */
+
+body.marketing { background: var(--bg); }
+body.marketing .site-header,
+body.marketing .container,
+body.marketing .site-footer { display: none; }
+
+/* ---- Marketing header ----------------------------------------------- */
+.marketing-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(246, 244, 238, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+@media (prefers-color-scheme: dark) {
+    .marketing-header { background: rgba(14, 16, 20, 0.92); }
+}
+
+.marketing-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.marketing-nav .nav-link {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    border: none;
+    border-radius: var(--radius-sm);
+    transition: color 120ms ease;
+}
+.marketing-nav .nav-link:hover { color: var(--text); border-bottom: none; }
+.marketing-nav .nav-cta {
+    padding: 0.55rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: var(--accent);
+    color: #fff;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-sm);
+    transition: background 120ms ease;
+}
+.marketing-nav .nav-cta:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+    border-bottom: none;
+}
+
+/* ---- Reusable content wrap ----------------------------------------- */
+.content-wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* ---- Section + section-title (marketing scoped) -------------------- */
+body.marketing .section {
+    padding: 5rem 0;
+}
+body.marketing .section .eyebrow {
+    display: block;
+    margin-bottom: 0.8rem;
+    color: var(--accent);
+}
+body.marketing .section-title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.022em;
+    line-height: 1.1;
+    max-width: 22ch;
+    margin: 0 0 2rem;
+}
+
+/* ---- HERO ----------------------------------------------------------- */
+.hero {
+    padding: 4.5rem 1.5rem 6rem;
+}
+.hero-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 4rem;
+    align-items: center;
+}
+
+.hero-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: var(--accent);
+    margin: 0 0 1rem;
+}
+.hero-headline {
+    font-size: 3.4rem;
+    font-weight: 700;
+    line-height: 1.04;
+    letter-spacing: -0.028em;
+    margin: 0 0 1.4rem;
+    color: var(--text);
+}
+.hero-deck {
+    font-size: 1.15rem;
+    line-height: 1.55;
+    color: var(--text-soft);
+    margin: 0 0 2rem;
+    max-width: 32em;
+}
+
+.hero-ctas {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.4rem;
+    flex-wrap: wrap;
+}
+
+.cta-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.85rem 1.4rem;
+    font-size: 1rem;
+    font-weight: 600;
+    background: var(--accent);
+    color: #fff;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-sm);
+    transition: background 140ms ease;
+    letter-spacing: -0.005em;
+}
+.cta-primary:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+    border-bottom: none;
+}
+.cta-primary.cta-large {
+    padding: 1.05rem 1.7rem;
+    font-size: 1.05rem;
+}
+
+.cta-secondary {
+    padding: 0.85rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+    border: none;
+    border-bottom: 1px solid var(--text);
+    border-radius: 0;
+}
+.cta-secondary:hover { color: var(--accent); border-color: var(--accent); }
+
+.hero-microcopy {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Hero visual — the pay-period card */
+.hero-visual { position: relative; }
+.hero-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.6rem 1.5rem 1.4rem;
+}
+.hero-card-header { margin-bottom: 1rem; }
+.hero-card-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+.hero-card-row .eyebrow {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+.hero-amount {
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums lining-nums;
+    letter-spacing: -0.01em;
+}
+.hero-track {
+    position: relative;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 1.6rem 0 2rem;
+}
+.hero-track-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: var(--accent);
+    border-radius: 2px;
+}
+.hero-track-marker {
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    border: 3px solid var(--bg);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 1px var(--accent);
+}
+.hero-track-label {
+    position: absolute;
+    top: 20px;
+    transform: translateX(-50%);
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+}
+.hero-card-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+.hero-stat .eyebrow { display: block; margin-bottom: 0.25rem; }
+.hero-stat-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums lining-nums;
+    letter-spacing: -0.015em;
+}
+
+/* ---- PAIN section -------------------------------------------------- */
+.pain { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.pain .section-title { max-width: 18ch; }
+.pain-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin: 0 0 2.5rem;
+}
+.pain-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.4rem 1.5rem;
+    position: relative;
+}
+.pain-card::before {
+    content: "“";
+    position: absolute;
+    top: -0.4rem;
+    left: 0.6rem;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--border-strong);
+    line-height: 1;
+}
+.pain-quote {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--text-soft);
+    padding-left: 0.4rem;
+}
+.pain-resolve {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text);
+    max-width: 38em;
+    margin: 0;
+}
+
+/* ---- HOW IT WORKS -------------------------------------------------- */
+.how-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: stepcount;
+    max-width: 720px;
+}
+.how-steps > li {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.8rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+}
+.how-steps > li:last-child { border-bottom: 0; }
+.step-num {
+    flex: 0 0 auto;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums lining-nums;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    min-width: 2.5rem;
+}
+.step-body h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0 0 0.4rem;
+    letter-spacing: -0.012em;
+}
+.step-body p {
+    margin: 0;
+    color: var(--text-soft);
+    font-size: 1rem;
+    line-height: 1.55;
+}
+
+/* ---- FEATURES grid ------------------------------------------------- */
+.features { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+.feature-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.6rem;
+    transition: border-color 140ms ease;
+}
+.feature-card:hover { border-color: var(--border-strong); }
+.feature-card.feature-card-emphasis {
+    border: 1.5pt solid var(--accent);
+    background: var(--accent-soft);
+}
+.feature-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    font-variant-numeric: tabular-nums lining-nums;
+    display: block;
+    margin-bottom: 0.6rem;
+}
+.feature-card h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.012em;
+}
+.feature-card p {
+    margin: 0;
+    color: var(--text-soft);
+    line-height: 1.55;
+}
+
+/* ---- FAQ ----------------------------------------------------------- */
+.faq-list { max-width: 760px; }
+.faq-item {
+    border-bottom: 1px solid var(--border);
+    padding: 1.2rem 0;
+}
+.faq-item:first-child { padding-top: 0; }
+.faq-item summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-right: 1rem;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+    content: "+";
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    transition: transform 150ms ease;
+    line-height: 1;
+}
+.faq-item[open] summary::after { content: "−"; color: var(--accent); }
+.faq-item summary h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0;
+    display: inline;
+    letter-spacing: -0.01em;
+}
+.faq-item > p {
+    margin: 0.9rem 0 0;
+    color: var(--text-soft);
+    line-height: 1.6;
+    max-width: 55em;
+}
+
+/* ---- FINAL CTA ----------------------------------------------------- */
+.final-cta {
+    background: var(--text);
+    color: var(--bg);
+    text-align: center;
+    border-top: 0;
+}
+.final-cta-inner { max-width: 600px; margin: 0 auto; }
+.final-cta .cta-headline {
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.022em;
+    line-height: 1.1;
+    margin: 0 0 1.2rem;
+    color: var(--bg);
+}
+.final-cta .cta-deck {
+    font-size: 1.1rem;
+    color: var(--bg);
+    opacity: 0.78;
+    margin: 0 0 2rem;
+    line-height: 1.55;
+}
+.final-cta .cta-primary {
+    background: var(--bg);
+    color: var(--text);
+    border-color: var(--bg);
+}
+.final-cta .cta-primary:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+.final-cta .hero-microcopy {
+    margin-top: 1.5rem;
+    color: var(--bg);
+    opacity: 0.7;
+}
+.final-cta .hero-microcopy a {
+    color: var(--bg);
+    border-bottom: 1px solid currentColor;
+}
+.final-cta .hero-microcopy a:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ---- Marketing footer --------------------------------------------- */
+.marketing-footer {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 1.5rem 2rem;
+}
+.footer-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+.footer-brand p { margin: 0.4rem 0 0; }
+.footer-nav {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+.footer-nav a {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    border: none;
+}
+.footer-nav a:hover { color: var(--text); border-bottom: 1px solid var(--text); }
+.footer-fineprint {
+    max-width: 1080px;
+    margin: 2rem auto 0;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+
+/* ---- Responsive — landing page ----------------------------------- */
+@media (max-width: 880px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    .hero-headline { font-size: 2.4rem; }
+    .hero-deck { font-size: 1.05rem; }
+    body.marketing .section { padding: 3.5rem 0; }
+    body.marketing .section-title { font-size: 1.9rem; }
+    .final-cta .cta-headline { font-size: 1.9rem; }
+    .how-steps > li { gap: 1rem; }
+    .step-num { font-size: 1.6rem; min-width: 2rem; }
+}
+@media (max-width: 540px) {
+    .marketing-header { padding: 0.85rem 1rem; }
+    .marketing-nav .nav-link { padding: 0.45rem 0.6rem; font-size: 0.85rem; }
+    .marketing-nav .nav-cta { padding: 0.5rem 0.85rem; font-size: 0.85rem; }
+    .hero { padding: 2.5rem 1rem 3.5rem; }
+    .hero-headline { font-size: 1.9rem; }
+    .content-wrap { padding: 0 1rem; }
+    .hero-ctas { flex-direction: column; align-items: stretch; gap: 0.6rem; }
+    .hero-ctas .cta-primary,
+    .hero-ctas .cta-secondary { text-align: center; justify-content: center; }
+}
