@@ -1,0 +1,18 @@
+[build]
+  publish = "netlify"
+
+# Netlify acts as the public HTTPS entry point and proxies the entire
+# application to the persistent Python web service.
+# Replace the hostname below with the exact Render service URL after the
+# backend is created if Render assigns a different onrender.com hostname.
+[[redirects]]
+  from = "/*"
+  to = "https://payday-tracker-api.onrender.com/:splat"
+  status = 200
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

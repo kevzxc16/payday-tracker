@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: payday-tracker-api
+    runtime: docker
+    plan: starter
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /healthz
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 10000
+      - key: DB_PATH
+        value: /data/payday.db
+      - key: BASE_URL
+        value: https://payday-tracker-kevzxc.netlify.app
+      - key: DEBUG
+        value: false
+      - key: SESSION_LIFETIME_DAYS
+        value: 30
+      - key: SCHEDULER_INTERVAL_SECONDS
+        value: 60
+      - key: SECRET_KEY
+        generateValue: true
+      - key: SMTP_HOST
+        value: ""
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USERNAME
+        value: ""
+      - key: SMTP_PASSWORD
+        value: ""
+      - key: SMTP_FROM_NAME
+        value: Payday Tracker
+      - key: SMTP_FROM_EMAIL
+        value: ""
+      - key: SMTP_USE_TLS
+        value: true
+    disk:
+      name: payday-data
+      mountPath: /data
+      sizeGB: 1
